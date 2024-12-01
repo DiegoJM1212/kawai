@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "routes": [
+      { "src": "/api/adopapi", "dest": "/adopapi.js" },
+      { "src": "/api/centralapi", "dest": "/centralapi.js" },
+      { "src": "/api/bancoapi", "dest": "/bancoapi.js" },
+      { "src": "/api/medicoapi", "dest": "/medicoapi.js" },
+      { "src": "/api/paypalapi", "dest": "/paypalapi.js" },
+      { "src": "/api/proteapi", "dest": "/proteapi.js" },
+      { "src": "/api/registroapi", "dest": "/registroapi.js" }
+    ]
+  }
+  
