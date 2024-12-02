@@ -1,43 +1,26 @@
-// Controller para el onboarding
+const express = require('express');
+const router = express.Router();
+const { checkOnboarding, finishOnboarding } = require('../controladores/onboardingController');
 
-// Configuración de las rutas
-const LOGIN_ROUTE = '/login';
-const ONBOARDING_ROUTE = '/onboarding';
+// Ruta para la página de onboarding
+router.get('/onboarding', checkOnboarding, (req, res) => {
+  res.render('onboarding'); // Renderiza la vista del onboarding
+});
 
-// Opciones para la cookie
-const COOKIE_OPTIONS = {
-  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 año
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production', // Solo HTTPS en producción
-  sameSite: 'strict'
-};
+// Ruta para finalizar el onboarding
+router.get('/finish-onboarding', finishOnboarding);
 
-// Verificar si el onboarding ya fue visto
-const checkOnboarding = (req, res, next) => {
-  try {
-    if (req.cookies.onboardingSeen) {
-      // Si ya fue visto, redirige al login
-      return res.redirect(LOGIN_ROUTE);
-    } else {
-      // Si no, muestra la página de onboarding
-      next();
-    }
-  } catch (error) {
-    console.error('Error en checkOnboarding:', error);
-    res.status(500).send('Error interno del servidor');
+// Ruta para el login (raíz del proyecto)
+router.get('/login', (req, res) => {
+  res.render('login'); // Renderiza la vista de inicio de sesión
+});
+
+// Ruta por defecto que redirige al onboarding o al login
+router.get('/', (req, res) => {
+  if (!req.cookies.onboardingSeen) {
+    return res.redirect('/onboarding');
   }
-};
+  res.redirect('/login');
+});
 
-// Función para finalizar el onboarding
-const finishOnboarding = (req, res) => {
-  try {
-    // Marca el onboarding como completado guardando una cookie
-    res.cookie('onboardingSeen', 'true', COOKIE_OPTIONS);
-    res.redirect(LOGIN_ROUTE);
-  } catch (error) {
-    console.error('Error en finishOnboarding:', error);
-    res.status(500).send('Error al finalizar el onboarding');
-  }
-};
-
-module.exports = { checkOnboarding, finishOnboarding };
+module.exports = router;
