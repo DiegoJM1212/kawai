@@ -4,7 +4,7 @@ const { checkOnboarding, showOnboarding, finishOnboarding } = require('../contro
 
 // Ruta raíz: Comprueba si el usuario ha visto el onboarding
 router.get('/', checkOnboarding, (req, res) => {
-  res.render('login');
+  res.render('login');  // Asegúrate de que 'login' sea la vista correcta
 });
 
 // Ruta para la página de onboarding
@@ -12,10 +12,5 @@ router.get('/onboarding', showOnboarding);
 
 // Ruta para finalizar el onboarding
 router.get('/finish-onboarding', finishOnboarding);
-
-// Ruta para el login
-router.get('/login', (req, res) => {
-  res.render('login');
-});
 
 module.exports = router;
