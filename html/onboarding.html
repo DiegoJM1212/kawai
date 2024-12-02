@@ -36,20 +36,7 @@
 
   <script src="/controladores/onboardingController.js"></script>
 
-  <!-- Registra el Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js') // Asegúrate de que el sw.js esté en la raíz
-          .then((registration) => {
-            console.log('Service Worker registrado con éxito:', registration);
-          })
-          .catch((error) => {
-            console.log('Error al registrar el Service Worker:', error);
-          });
-      });
-    }
-  </script>
+
 </body>
 </html>
 
