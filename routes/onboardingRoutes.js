@@ -4,16 +4,23 @@ const { checkOnboarding, finishOnboarding } = require('../controladores/onboardi
 
 // Ruta para la página de onboarding
 router.get('/onboarding', checkOnboarding, (req, res) => {
-  // Si el onboarding no ha sido completado, se muestra la vista de onboarding
-  res.render('onboarding');  // Asegúrate de que el motor de plantillas esté configurado para ejs o el que uses
+  res.render('onboarding'); // Renderiza la vista del onboarding
 });
 
 // Ruta para finalizar el onboarding
 router.get('/finish-onboarding', finishOnboarding);
 
 // Ruta para el login (raíz del proyecto)
+router.get('/login', (req, res) => {
+  res.render('login'); // Renderiza la vista de inicio de sesión
+});
+
+// Ruta por defecto que redirige al onboarding o al login
 router.get('/', (req, res) => {
-  res.render('login');  // Asumiendo que tienes una vista 'login'
+  if (!req.cookies.onboardingSeen) {
+    return res.redirect('/onboarding');
+  }
+  res.redirect('/login');
 });
 
 module.exports = router;
