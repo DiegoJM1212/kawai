@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const API_URL = process.env.API2_URL; // Asegúrate de que esta URL sea correcta
+const AP2_URL = process.env.API2_URL; // Asegúrate de que esta URL sea correcta
 
 const obtenerMascotas = async () => {
     try {
