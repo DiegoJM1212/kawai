@@ -1,26 +1,43 @@
-const express = require('express');
-const router = express.Router();
-const { checkOnboarding, finishOnboarding } = require('../controladores/onboardingController');
+// Controller para el onboarding
 
-// Ruta para la página de onboarding
-router.get('/onboarding', checkOnboarding, (req, res) => {
-  res.render('onboarding'); // Renderiza la vista del onboarding
-});
+const LOGIN_ROUTE = '/login';
+const ONBOARDING_ROUTE = '/onboarding';
 
-// Ruta para finalizar el onboarding
-router.get('/finish-onboarding', finishOnboarding);
+const COOKIE_OPTIONS = {
+  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 año
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production', // Solo HTTPS en producción
+  sameSite: 'strict'
+};
 
-// Ruta para el login (raíz del proyecto)
-router.get('/login', (req, res) => {
-  res.render('login'); // Renderiza la vista de inicio de sesión
-});
-
-// Ruta por defecto que redirige al onboarding o al login
-router.get('/', (req, res) => {
-  if (!req.cookies.onboardingSeen) {
-    return res.redirect('/onboarding');
+const checkOnboarding = (req, res, next) => {
+  try {
+    if (req.cookies.onboardingSeen) {
+      // Si ya fue visto, continúa al siguiente middleware
+      next();
+    } else {
+      // Si no, redirige al onboarding
+      res.redirect(ONBOARDING_ROUTE);
+    }
+  } catch (error) {
+    console.error('Error en checkOnboarding:', error);
+    res.status(500).send('Error interno del servidor');
   }
-  res.redirect('/login');
-});
+};
 
-module.exports = router;
+const showOnboarding = (req, res) => {
+  res.render('onboarding');
+};
+
+const finishOnboarding = (req, res) => {
+  try {
+    // Marca el onboarding como completado guardando una cookie
+    res.cookie('onboardingSeen', 'true', COOKIE_OPTIONS);
+    res.redirect(LOGIN_ROUTE);
+  } catch (error) {
+    console.error('Error en finishOnboarding:', error);
+    res.status(500).send('Error al finalizar el onboarding');
+  }
+};
+
+module.exports = { checkOnboarding, showOnboarding, finishOnboarding };
