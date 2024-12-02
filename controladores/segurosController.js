@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // Configura la URL base de la API externa
-const apiUrl = 'http://localhost:3003';
+const AP3_URL = process.env.API3_URL;
 
 // Controlador para obtener todos los seguros
 exports.obtenerSeguros = async (req, res) => {
