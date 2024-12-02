@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
-
+const API5_URL = process.env.API5_URL;
 // Variables de la API del Banco Central
 const BCCR_ENDPOINT = 'https://gee.bccr.fi.cr/Indicadores/Suscripciones/WS/wsindicadoreseconomicos.asmx';
 const EMAIL = 'diego.jimenez.monge@hotmail.com';
