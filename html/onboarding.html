@@ -9,7 +9,7 @@
   <!-- Vincula tu manifest.json -->
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" sizes="192x192" href="/icons/lo.png">
- <link rel="icon" sizes="512x512" href="/icons/go.png">
+  <link rel="icon" sizes="512x512" href="/icons/go.png">
 
   <!-- Vincula el archivo CSS para el onboarding -->
   <link rel="stylesheet" href="/css/onboarding.css">
@@ -18,18 +18,17 @@
   <!-- Contenedor principal del onboarding -->
   <div id="onboarding">
     <div id="slides" class="image-carousel">
-      <!-- Deslizador de imágenes para el onboarding -->
-      <div class="slide"> <img src="https://i.imgur.com/HNeX5uU.png" alt="Veterinaria"> </div>
-      <div class="slide"> <img src="https://i.imgur.com/47cl7mh.png" alt="Estética"> </div>
-      <div class="slide"> <img src="https://i.imgur.com/idg1Iqi.png" alt="Hotel"> </div>
-      <div class="slide"> <img src="https://i.imgur.com/fkgIP7H.png" alt="Bienvenido"> </div>
+      <div class="slide"><img src="https://i.imgur.com/HNeX5uU.png" alt="Veterinaria"></div>
+      <div class="slide"><img src="https://i.imgur.com/47cl7mh.png" alt="Estética"></div>
+      <div class="slide"><img src="https://i.imgur.com/idg1Iqi.png" alt="Hotel"></div>
+      <div class="slide"><img src="https://i.imgur.com/fkgIP7H.png" alt="Bienvenido"></div>
     </div>
     <form action="/finish-onboarding" method="GET">
       <button type="submit">Continuar</button>
     </form>
   </div>
 
-  <!-- Modal (ventana emergente) para ver las imágenes ampliadas -->
+  <!-- Modal para ver las imágenes ampliadas -->
   <div id="modal" class="modal">
     <img id="modal-image" src="" alt="Full Size Image">
     <a href="#" class="close-modal">X</a>
@@ -41,7 +40,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')  // Asegúrate de que el sw.js esté en la raíz
+        navigator.serviceWorker.register('/sw.js') // Asegúrate de que el sw.js esté en la raíz
           .then((registration) => {
             console.log('Service Worker registrado con éxito:', registration);
           })
@@ -53,3 +52,4 @@
   </script>
 </body>
 </html>
+
