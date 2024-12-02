@@ -162,6 +162,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'html', 'login.html'));
 });
 
+// Ruta para 'onboarding.html'
+app.get('/onboarding', (req, res) => {
+    res.sendFile(path.join(__dirname, 'html', 'onboarding.html'));
+});
+
 // Ruta para el archivo de service worker (sw.js)
 app.get('/sw.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'sw.js'));
