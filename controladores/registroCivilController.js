@@ -1,5 +1,8 @@
 const axios = require('axios'); // Librería para hacer peticiones HTTP
 
+// Obtener la URL de la API del registro civil desde las variables de entorno
+const API7_URL = process.env.API7_URL;
+
 // Controlador para obtener los datos de registro civil
 const obtenerDatosRegistroCivil = async (req, res) => {
     const cedula = req.params.cedula;
@@ -7,8 +10,8 @@ const obtenerDatosRegistroCivil = async (req, res) => {
     console.log(`Buscando datos para la cédula: ${cedula}`); // Verificar que la cédula es correcta
 
     try {
-        // Hacer la solicitud GET a la API del registro civil (externa)
-        const response = await axios.get(`http://localhost:3005/registro-civil/${cedula}`);
+        // Hacer la solicitud GET a la API del registro civil (usando la variable de entorno)
+        const response = await axios.get(`${API7_URL}/registro-civil/${cedula}`);
         
         console.log('Respuesta de la API:', response.data); // Verifica la respuesta de la API
 
