@@ -167,6 +167,10 @@ app.get('/sw.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'sw.js'));
 });
 
+app.get('/healthz', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
