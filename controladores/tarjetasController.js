@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // URL de la API externa de tarjetas
-const apiUrl = 'http://localhost:3002';  // URL de la API de pagos con tarjeta
+const AP4_URL = process.env.API4_URL;// URL de la API de pagos con tarjeta
 
 // Obtener el saldo de una tarjeta
 const obtenerSaldo = async (req, res) => {
