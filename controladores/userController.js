@@ -87,10 +87,6 @@ async function registrarUsuario(req, res) {
     } catch (error) {
         console.error('Error al registrar usuario:', error.message);
         return res.status(500).json({ message: 'Error al registrar el usuario. Por favor, intente nuevamente.' });
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
@@ -101,6 +97,11 @@ async function iniciarSesion(req, res) {
         const { username, password } = req.body;
 
         connection = await poolPromise;
+
+        if (!connection) {
+            return res.status(500).json({ message: 'Error al conectar con la base de datos.' });
+        }
+
         const result = await connection.request()
             .input('username', sql.VarChar, username)
             .query('SELECT * FROM usuarios WHERE username = @username OR email = @username');
@@ -178,34 +179,10 @@ async function iniciarSesion(req, res) {
     } catch (error) {
         console.error('Error al iniciar sesión:', error.message);
         return res.status(500).json({ message: 'Error al iniciar sesión. Por favor, intente nuevamente.' });
-    } finally {
-        if (connection) {
-            connection.close();
-        }
-    }
-}
-
-// Función para verificar el código de verificación (sin cambios)
-async function verificarCodigo(req, res) {
-    try {
-        const { verificationCode } = req.body;
-
-        if (req.session.verificationCode && req.session.verificationCode === verificationCode) {
-            req.session.isAuthenticated = true;
-            req.session.verificationCode = null;
-
-            return res.status(200).json({ message: 'Verificación exitosa' });
-        } else {
-            return res.status(401).json({ message: 'Código de verificación incorrecto' });
-        }
-    } catch (error) {
-        console.error('Error al verificar el código:', error.message);
-        return res.status(500).json({ message: 'Error al verificar el código' });
     }
 }
 
 module.exports = {
     registrarUsuario,
-    iniciarSesion,
-    verificarCodigo
-};
+    iniciarSesion
+}
