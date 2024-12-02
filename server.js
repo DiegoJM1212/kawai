@@ -41,7 +41,7 @@ const onboardingRoutes = require('./routes/onboardingRoutes');
 const db = require('./data/db'); // Conexión a la base de datos
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 10000;
 
 // ** Aquí agregamos CORS ** 
 const cors = require('cors');  // Importa CORS
