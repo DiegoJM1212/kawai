@@ -1,7 +1,7 @@
 // controllers/veterinariosController.js
 const sql = require('mssql');
 
-const apiUrl = 'http://localhost:3004';
+const AP6_URL = process.env.API6_URL;
 // Configuración de la base de datos
 const config = {
     user: 'diego',
