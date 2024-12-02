@@ -1,10 +1,14 @@
 const axios = require('axios');
-require('dotenv').config();  // Carga las variables del archivo .env
+require('dotenv').config(); // Carga las variables del archivo .env
 
 // Credenciales de PayPal desde las variables de entorno
 const clientId = process.env.PAYPAL_CLIENT_ID;
 const secret = process.env.PAYPAL_SECRET;
-// Función para obtener el token de acceso
+
+// URL de la API1 desde la variable de entorno
+const API1_URL = process.env.API1_URL; 
+
+// Función para obtener el token de acceso de PayPal
 const getAccessToken = async () => {
     const auth = Buffer.from(`${clientId}:${secret}`).toString('base64');
     try {
@@ -55,6 +59,20 @@ const createPayment = async (totalAmount) => {
 
         // Encuentra la URL de aprobación y devuélvela
         const approvalUrl = response.data.links.find((link) => link.rel === 'approval_url').href;
+
+        // Aquí puedes hacer una llamada adicional a API1 para registrar el pago si es necesario
+        if (API1_URL) {
+            try {
+                await axios.post(`${API1_URL}/registro-pago`, {
+                    paymentId: response.data.id,
+                    amount: totalAmount,
+                });
+                console.log('Pago registrado correctamente en API1');
+            } catch (error) {
+                console.error('Error registrando el pago en API1:', error.message);
+            }
+        }
+
         return approvalUrl;
     } catch (error) {
         console.error('Error creando el pago:', error);
@@ -76,6 +94,20 @@ const executePayment = async (paymentId, payerId) => {
         });
 
         console.log('Pago ejecutado exitosamente:', response.data);
+
+        // Aquí puedes hacer una llamada a API1 para registrar la ejecución del pago si es necesario
+        if (API1_URL) {
+            try {
+                await axios.post(`${API1_URL}/pago-ejecutado`, {
+                    paymentId: response.data.id,
+                    status: response.data.state,
+                });
+                console.log('Ejecución de pago registrada correctamente en API1');
+            } catch (error) {
+                console.error('Error registrando la ejecución del pago en API1:', error.message);
+            }
+        }
+
         return response.data;
     } catch (error) {
         console.error('Error ejecutando el pago:', error);
@@ -112,3 +144,4 @@ const ejecutarPagoPaypal = async (req, res) => {
 };
 
 module.exports = { crearPagoPaypal, ejecutarPagoPaypal };
+
