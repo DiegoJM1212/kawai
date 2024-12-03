@@ -36,18 +36,18 @@
     </footer>
 
     <script>
-        const API2_URL = 'https://adop.onrender.com'; // Eliminar apóstrofe extra
-
+        const API2_URL = 'https://adop.onrender.com'; // Asegúrate de que la URL sea correcta
+        
         async function cargarMascotas() {
             try {
-                console.log('API2_URL:', API2_URL); // Log the API URL
+                console.log('API2_URL:', API2_URL); // Log para verificar la URL
                 const response = await fetch(`${API2_URL}/api/mascotas`);
-                console.log('Response status:', response.status); // Log the response status
+                console.log('Response status:', response.status); // Verifica el estado de la respuesta
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const mascotas = await response.json();
-                console.log('Mascotas:', mascotas); // Log the received data
+                console.log('Mascotas:', mascotas); // Verifica que los datos de mascotas lleguen correctamente
 
                 const select = document.getElementById('mascotasSelect');
                 select.innerHTML = '<option value="" disabled selected>Selecciona una mascota</option>';
@@ -97,10 +97,12 @@
             const errorElement = document.getElementById('error-message');
             errorElement.textContent = mensaje;
             errorElement.style.display = 'block';
-            console.error('Error mostrado:', mensaje);
+            console.error('Error mostrado:', mensaje); // Log de mensaje de error
         }
 
+        // Cargar las mascotas cuando la página cargue
         window.onload = cargarMascotas;
     </script>
 </body>
 </html>
+
