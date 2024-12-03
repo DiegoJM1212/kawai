@@ -15,10 +15,10 @@
       <div class="slide"><img src="https://i.imgur.com/idg1Iqi.png" alt="Hotel"></div>
       <div class="slide"><img src="https://i.imgur.com/fkgIP7H.png" alt="Bienvenido"></div>
     </div>
-    <!-- Formulario que finaliza el onboarding -->
-    <form action="/onboarding/complete" method="GET">
-      <button type="submit">Continuar</button>
-    </form>
+    <!-- Formulario que finaliza el onboarding y redirige al login -->
+<form action="/login" method="GET">
+  <button type="submit">Continuar</button>
+</form>
   </div>
   <div id="modal" class="modal">
     <img id="modal-image" src="" alt="Full Size Image">
@@ -27,5 +27,3 @@
   <script src="/controladores/onboardingController.js"></script>
 </body>
 </html>
-
-
