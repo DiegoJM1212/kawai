@@ -43,26 +43,15 @@ const urlsToCache = [
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Cache opened');
-        return Promise.all(
-          urlsToCache.map((url) => {
-            return fetch(url)
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error('Error al obtener el archivo: ' + url);
-                }
-                return cache.put(url, response);
-              })
-              .catch((error) => {
-                console.error('Error al agregar al caché:', error);
-              });
-          })
-        );
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Cache opened');
+      return cache.addAll(urlsToCache).catch((error) => {
+        console.error('Error al agregar archivos a la caché:', error);
+      });
+    })
   );
 });
+
 
 // Fetch (obtención de archivos desde la caché o desde la red)
 self.addEventListener('fetch', (event) => {
