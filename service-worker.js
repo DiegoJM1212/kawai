@@ -1,7 +1,7 @@
 const CACHE_NAME = 'kawaipet-cache-v1';
 const urlsToCache = [
   '/',  // Página de inicio
-  
+
   // Archivos HTML
   '/html/accesorios.html',
   '/html/alimentos.html',
@@ -21,9 +21,10 @@ const urlsToCache = [
   '/html/reservacionhotel.html',
   '/html/seguimientoveterinaria.html',
   '/html/tarjetas.html',
-  
+
   '/icons/go.png',
   '/icons/lo.png',
+
   // Archivos CSS
   '/css/agendar-citaveterinaria.css',
   '/css/alimentos.css',
@@ -104,4 +105,5 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-});
+})
+
