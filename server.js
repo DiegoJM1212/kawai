@@ -170,8 +170,8 @@ app.get('/onboarding', (req, res) => {
 });
 
 // Ruta para el archivo de service worker (sw.js)
-app.get('/sw.js', (req, res) => {
-    res.sendFile(path.join(__dirname, 'sw.js'));
+app.get('/service-worker.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'service-worker.js'));
 });
 
 app.get('/healthz', (req, res) => {
