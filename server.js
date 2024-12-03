@@ -90,24 +90,26 @@ app.use('/api/cita-estetica', citaEsteticaApiRoutes); // Ruta de la API de cita 
 // Usar la ruta de la API de reservas
 app.use('/api/reservarHotel', reservasRoutes);  // Esta es la ruta correcta
 
+
 // Usar la ruta de la API de mascotas
-app.use(mascotasRoutes); // Esto registra las rutas definidas en mascotasapiRoutes.js
+app.use('/mascotas', mascotasRoutes); // Esto mantiene el controlador 'mascotasRoutes' y redirige correctamente las rutas a las APIs externas si es necesario.
+
 
 // **Agregar la ruta para la API de PayPal aquí**
-app.use('/api/paypal', paypalRoutes); // Ruta de la API de PayPal
+app.use('/paypal', paypalRoutes); // Ruta de la API de PayPal
 
 // **Agregar la ruta para la API de tarjetas aquí**
-app.use('/api/tarjetas', tarjetasApiRoutes); // Ruta de la API de tarjetas
+app.use('//tarjetas', tarjetasApiRoutes); // Ruta de la API de tarjetas
 
 app.use('/veterinarios', veterinariosRoutes);   
 
 // Usar la ruta de la API del Banco Central
-app.use('/api/banco-central', bancoCentralRoutes);
+app.use('/banco-central', bancoCentralRoutes);
 
 // Usar las rutas del registro civil
-app.use('/api/registrocivil', registroCivilRoutes);
+app.use('/registrocivil', registroCivilRoutes);
 
-app.use('/api/seguros', segurosRoutes);
+app.use('//seguros', segurosRoutes);
 
 app.use('/onboarding', onboardingRoutes);
 
