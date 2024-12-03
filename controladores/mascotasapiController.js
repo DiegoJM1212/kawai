@@ -1,6 +1,7 @@
 const axios = require('axios');
 
-const API2_URL = process.env.API2_URL || 'https://adop.onrender.com'; // Use the environment variable or fallback
+const API2_URL = 'https://adop.onrender.com';  // Asegúrate de que esta URL sea la correcta
+
 
 const obtenerMascotas = async () => {
     try {
