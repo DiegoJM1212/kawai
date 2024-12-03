@@ -34,15 +34,11 @@
     <footer>
         <p>&copy; 2024 Todos los derechos reservados</p>
     </footer>
-<script>
-    const API2_URL = '<%- process.env.API2_URL %>';
-    // Resto del código...
-</script>
-    <script>
+<  <script>
+        const API2_URL = '<%= apiUrl %>';
         
         async function cargarMascotas() {
             try {
-                const API2_URL = process.env.API2_URL || 'https://adop.onrender.com'; // Asegúrate de que esta URL sea correcta
                 const response = await fetch(`${API2_URL}/api/mascotas`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -98,7 +94,7 @@
             errorElement.style.display = 'block';
         }
 
-        window.onload = cargarMascotas;
+       window.onload = cargarMascotas;
     </script>
 </body>
 </html>
