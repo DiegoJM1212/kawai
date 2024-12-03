@@ -8,7 +8,7 @@ if (!userController) {
 }
 
 // Redirigir a la página de inicio de sesión por defecto
-router.get('/', (req, res) => {
+router.get('/login', (req, res) => {
     res.redirect('/login'); // Redirige a la pantalla de inicio de sesión
 });
 
