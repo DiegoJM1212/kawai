@@ -8,11 +8,11 @@
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-    <header>    
+    <header>
         <img src="https://i.imgur.com/9NkTv9N.jpg" alt="Logo de KawaiPet" class="logo">
         <h1>KawaiPet - Login / Registro</h1>
     </header>
-    
+
     <div class="form-container">
         <div id="message" style="display: none; color: red;"></div> <!-- Para mostrar mensajes -->
 
@@ -81,11 +81,10 @@
         <form id="two-factor-form" style="display: none;" action="/usuarios/verificar" method="POST" onsubmit="return handleTwoFactor(event)">
             <h2>Verificación en Dos Pasos</h2>
             <label for="verification-code">Código de Verificación:</label>
-            <input type="text" id="verification-code" name="verificationCode" required=""/>
+            <input type="text" id="verification-code" name="verificationCode" required>
             <button type="submit">Verificar</button>
             <p>No recibiste el código? <a href="#">Reenviar Código</a></p>
         </form>
-
     </div>
 
     <footer>
@@ -94,7 +93,6 @@
 
     <!-- Botón para instalar la aplicación -->
     <button id="install-button" style="display: none;" title="Instalar aplicación">Instalar</button>
-
 
     <script>
         document.getElementById('show-register').addEventListener('click', function (e) {
@@ -126,14 +124,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Error en las credenciales');
                 }
 
                 const data = await response.json();
-                
-                // Verifica si es necesario el paso de verificación en dos pasos
+
                 if (data.twoFactorRequired) {
                     document.getElementById('login-form').style.display = 'none';
                     document.getElementById('two-factor-form').style.display = 'block';
@@ -171,8 +168,7 @@
                 if (!response.ok) {
                     throw new Error('Error al registrar los datos');
                 }
-                
-                const data = await response.json();
+
                 alert('Usuario registrado con éxito');
                 window.location.href = '/login.html';
             } catch (error) {
@@ -191,42 +187,33 @@
             }
 
             try {
-                const response = await fetch(/api/registrocivil/registro-civil/${cedula});
+                const response = await fetch(`/api/registrocivil/registro-civil/${cedula}`);
                 const data = await response.json();
 
                 if (data.success) {
-                    
                     document.getElementById('message').innerText = 'Cédula verificada correctamente.';
                     document.getElementById('message').style.display = 'block';
                 } else {
-                    document.getElementById('message').innerText = 'Error al verificar';
+                    document.getElementById('message').innerText = 'Error al verificar la cédula.';
                 }
             } catch (error) {
-                alert("Error" + error)
+                alert("Error: " + error.message);
             }
         }
 
-let deferredPrompt;
+        let deferredPrompt;
 
-window.addEventListener('beforeinstallprompt', (event) => {
-    console.log('beforeinstallprompt event detected');
-    event.preventDefault();  // Evita que el navegador muestre el prompt automáticamente
-    deferredPrompt = event;
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            deferredPrompt = event;
 
-    const installButton = document.querySelector('#install-button');
-    installButton.style.display = 'block';  // Asegúrate de que el botón sea visible
-    console.log('Botón de instalación visible:', installButton.style.display);
+            const installButton = document.querySelector('#install-button');
+            installButton.style.display = 'block';
 
-    // Asocia el evento al botón de instalación
-    installButton.addEventListener('click', () => {
-        deferredPrompt.prompt();  // Muestra el prompt de instalación
-    });
-});
-
-
-
-
-
+            installButton.addEventListener('click', () => {
+                deferredPrompt.prompt();
+            });
+        });
     </script>
 </body>
 </html>
