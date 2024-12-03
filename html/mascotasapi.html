@@ -36,8 +36,8 @@
     </footer>
 
     <script>
-        const API2_URL = 'https://adop.onrender.com'; // URL de la API (asegúrate de que esta URL sea válida)
-
+        const API2_URL = 'https://adop.onrender.com'; // Asegúrate de que la URL sea correcta
+        
         async function cargarMascotas() {
             try {
                 console.log('API2_URL:', API2_URL); // Log para verificar la URL
@@ -50,7 +50,7 @@
                 console.log('Mascotas:', mascotas); // Verifica que los datos de mascotas lleguen correctamente
 
                 const select = document.getElementById('mascotasSelect');
-                select.innerHTML = '<option value="" disabled selected>Selecciona una mascota</option>'; // Limpiar las opciones
+                select.innerHTML = '<option value="" disabled selected>Selecciona una mascota</option>';
 
                 mascotas.forEach(mascota => {
                     const option = document.createElement('option');
@@ -95,10 +95,8 @@
 
         function mostrarError(mensaje) {
             const errorElement = document.getElementById('error-message');
-            if (errorElement) {
-                errorElement.textContent = mensaje;
-                errorElement.style.display = 'block';
-            }
+            errorElement.textContent = mensaje;
+            errorElement.style.display = 'block';
             console.error('Error mostrado:', mensaje); // Log de mensaje de error
         }
 
