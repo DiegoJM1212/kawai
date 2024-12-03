@@ -1,16 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { checkOnboarding, showOnboarding, finishOnboarding } = require('../controladores/onboardingController');
+// Ruta para mostrar el onboarding
+router.get('/onboarding', showOnboarding);
 
-// Ruta raíz: Muestra el onboarding directamente
-router.get('/', showOnboarding);
+// Ruta para el login, solo si el usuario ya completó el onboarding
+router.get('/', showLogin);
 
-// Ruta para el login
-router.get('/', checkOnboarding, (req, res) => {
-  res.render('login');  // Muestra el login si ya pasó el onboarding
-});
-
-// Ruta POST para completar el onboarding
-router.post('/finish-onboarding', finishOnboarding);
+// Ruta para el login (otra forma de asegurarse de que solo se muestra si el onboarding ha sido completado)
+router.get('/login', showLogin);
 
 module.exports = router;
