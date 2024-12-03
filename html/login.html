@@ -207,31 +207,21 @@
 
 let deferredPrompt;
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-}
+window.addEventListener('beforeinstallprompt', (event) => {
+    console.log('beforeinstallprompt event detected');
+    event.preventDefault();  // Evita que el navegador muestre el prompt automáticamente
+    deferredPrompt = event;
 
-document.addEventListener('DOMContentLoaded', () => {
     const installButton = document.querySelector('#install-button');
+    installButton.style.display = 'block';  // Asegúrate de que el botón sea visible
+    console.log('Botón de instalación visible:', installButton.style.display);
 
-    window.addEventListener('beforeinstallprompt', (event) => {
-        console.log('beforeinstallprompt event detected');
-        event.preventDefault();  // Evita que el navegador muestre el prompt automáticamente
-        deferredPrompt = event;  // Asigna el evento a la variable global deferredPrompt
-
-        if (installButton) {
-            installButton.style.display = 'block';  // Asegúrate de que el botón sea visible
-            console.log('Botón de instalación visible:', installButton.style.display);
-
-            // Asocia el evento al botón de instalación
-            installButton.addEventListener('click', () => {
-                deferredPrompt.prompt();  // Muestra el prompt de instalación
-            });
-        } else {
-            console.error('Botón de instalación no encontrado');
-        }
+    // Asocia el evento al botón de instalación
+    installButton.addEventListener('click', () => {
+        deferredPrompt.prompt();  // Muestra el prompt de instalación
     });
 });
+
 
 
 
