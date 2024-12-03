@@ -50,7 +50,9 @@
                 console.log('Response status:', response.status); // Verifica el estado de la respuesta
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    // Captura el cuerpo del error, si es posible
+                    const errorDetail = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorDetail}`);
                 }
 
                 const mascotas = await response.json();
