@@ -8,9 +8,9 @@ const COOKIE_OPTIONS = {
 // Middleware para verificar si el usuario ha completado el onboarding
 const checkOnboarding = (req, res, next) => {
   if (req.cookies.onboardingSeen) {
-    return res.redirect('/');  // Redirige al login si ya ha visto el onboarding
+    return next();  // Si ya pasó el onboarding, permite avanzar
   } else {
-    return res.redirect('/onboarding');  // Muestra el onboarding si no lo ha visto
+    return res.redirect('/');  // Si no ha pasado el onboarding, vuelve a la raíz
   }
 };
 
@@ -22,10 +22,7 @@ const showOnboarding = (req, res) => {
 // Marca el onboarding como completado y redirige al login
 const finishOnboarding = (req, res) => {
   res.cookie('onboardingSeen', 'true', COOKIE_OPTIONS);  // Marca el onboarding como completado
-  res.redirect('/');  // Redirige al login
+  res.redirect('/login');  // Redirige al login después de completar el onboarding
 };
 
 module.exports = { checkOnboarding, showOnboarding, finishOnboarding };
-
-
-
