@@ -92,8 +92,10 @@
         <p>© 2024 KawaiPet. Todos los derechos reservados.</p>
     </footer>
 
-    <script>
+    <!-- Botón para instalar la aplicación -->
+    <button id="install-button" style="display: none;">Instalar</button>
 
+    <script>
         document.getElementById('show-register').addEventListener('click', function (e) {
             e.preventDefault();
             document.getElementById('login-form').style.display = 'none';
@@ -196,54 +198,28 @@
                     document.getElementById('message').innerText = 'Cédula verificada correctamente.';
                     document.getElementById('message').style.display = 'block';
                 } else {
-                    document.getElementById('message').innerText = 'Cédula no válida o no encontrada.';
-                    document.getElementById('message').style.display = 'block';
+                    document.getElementById('message').innerText = 'Error al verificar';
                 }
             } catch (error) {
-                console.error('Error al verificar la cédula:', error);
-                document.getElementById('message').innerText = 'Hubo un error al verificar la cédula.';
-                document.getElementById('message').style.display = 'block';
+                alert("Error" + error)
             }
         }
 
-        async function handleTwoFactor(event) {
+        let deferredPrompt;
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js');
+        }
+
+        window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
-            const verificationCode = document.getElementById('verification-code').value;
+            deferredPrompt = event;
+            document.querySelector('#install-button').style.display = 'block';
 
-            try {
-                const response = await fetch('/usuarios/verificar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ verificationCode })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Código de verificación incorrecto');
-                }
-
-                window.location.href = '/inicio.html';
-            } catch (error) {
-                document.getElementById('message').innerText = error.message;
-                document.getElementById('message').style.display = 'block';
-            }
-        }
+            document.querySelector('#install-button').addEventListener('click', () => {
+                deferredPrompt.prompt();
+            });
+        });
     </script>
-    <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/service-worker.js') // Ruta correcta del Service Worker
-      .then((registration) => {
-        console.log('Service Worker registrado con éxito:', registration);
-      })
-      .catch((error) => {
-        console.log('Error al registrar el Service Worker:', error);
-      });
-  });
-}
-
-
-</script>
-
 </body>
 </html>
