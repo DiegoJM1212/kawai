@@ -11,6 +11,6 @@ router.get('/', checkOnboarding, (req, res) => {
 router.get('/onboarding', showOnboarding);
 
 // Ruta para finalizar el onboarding
-router.get('/finish-onboarding', finishOnboarding);
+router.get('/', finishOnboarding);
 
 module.exports = router;
