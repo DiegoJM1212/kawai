@@ -14,7 +14,8 @@ router.get('/api/mascotas', async (req, res, next) => {
         const mascotas = await mascotasController.obtenerMascotas();
         res.json(mascotas);
     } catch (error) {
-        next(error);
+        console.error('Error en la ruta /api/mascotas:', error);
+        res.status(500).json({ error: 'Error al obtener las mascotas', details: error.message });
     }
 });
 router.all('*', async (req, res) => {
