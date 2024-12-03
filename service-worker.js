@@ -9,7 +9,7 @@ const urlsToCache = [
   '/html/esteticareservaciones.html',
   '/html/inicio.html',
   '/html/login.html',
-  '/html/masocotasapi.html',
+  '/html/mascotasapi.html',
   '/html/medicamentos.html',
   '/html/offline.html',
   '/html/onboarding.html',
