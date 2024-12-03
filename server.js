@@ -161,12 +161,12 @@ app.get('/recuperar', (req, res) => {
 
 // Ruta para la raíz (/) redirige a 'login.html'
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'html', 'onboarding.html'));
+    res.sendFile(path.join(__dirname, 'html', 'login.html'));
 });
 
 // Ruta para 'onboarding.html'
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'html', 'login.html'));
+app.get('/onboarding', (req, res) => {
+    res.sendFile(path.join(__dirname, 'html', 'onboarding.html'));
 });
 
 // Ruta para el archivo de service worker (sw.js)
