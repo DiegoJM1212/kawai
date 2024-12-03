@@ -13,11 +13,21 @@
         <h1>KawaiPet - Login / Registro</h1>
     </header>
 
+    <!-- Botón para iniciar el onboarding -->
+    <button id="start-onboarding" style="display: none;">Iniciar Onboarding</button>
+
+    <!-- Contenido del Onboarding (por defecto oculto) -->
+    <div id="onboarding" style="display: none;">
+        <h2>Bienvenido al Onboarding</h2>
+        <p>Aquí va el contenido del onboarding...</p>
+        <button id="finish-onboarding">Terminar Onboarding</button>
+    </div>
+
     <div class="form-container">
         <div id="message" style="display: none; color: red;"></div> <!-- Para mostrar mensajes -->
 
         <!-- Formulario de Login -->
-        <form id="login-form" style="display: block;">
+        <form id="login-form" style="display: none;">
             <h2>Iniciar Sesión</h2>
             <label for="username">Usuario o Correo Electrónico:</label>
             <input type="text" id="username" name="username" required>
@@ -95,6 +105,29 @@
     <button id="install-button" style="display: none;" title="Instalar aplicación">Instalar</button>
 
     <script>
+        // Mostrar el onboarding si el usuario no ha completado el proceso
+        window.onload = function() {
+            if (localStorage.getItem('onboardingCompleted') === 'true') {
+                document.getElementById('login-form').style.display = 'block';
+            } else {
+                document.getElementById('start-onboarding').style.display = 'block';
+            }
+        };
+
+        // Muestra el onboarding cuando el usuario haga clic en "Iniciar Onboarding"
+        document.getElementById('start-onboarding').addEventListener('click', function () {
+            document.getElementById('onboarding').style.display = 'block';  // Muestra el onboarding
+            document.getElementById('login-form').style.display = 'none';  // Oculta el login
+            document.getElementById('register-form').style.display = 'none';  // Oculta el registro
+        });
+
+        // Al terminar el onboarding
+        document.getElementById('finish-onboarding').addEventListener('click', function () {
+            localStorage.setItem('onboardingCompleted', 'true');  // Marca el onboarding como completado
+            document.getElementById('onboarding').style.display = 'none';  // Oculta el onboarding
+            document.getElementById('login-form').style.display = 'block';  // Muestra el login
+        });
+
         document.getElementById('show-register').addEventListener('click', function (e) {
             e.preventDefault();
             document.getElementById('login-form').style.display = 'none';
@@ -150,70 +183,74 @@
             const email = document.getElementById('reg-email').value;
             const telefono = document.getElementById('reg-telefono').value;
             const birthday = document.getElementById('reg-birthday').value;
+            const cedula = document.getElementById('reg-cedula').value;
             const password = document.getElementById('reg-password').value;
             const answer1 = document.getElementById('answer1').value;
             const answer2 = document.getElementById('answer2').value;
             const answer3 = document.getElementById('answer3').value;
-            const cedula = document.getElementById('reg-cedula').value;
 
             try {
                 const response = await fetch('/usuarios/registro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre, username, email, telefono, birthday, password, answer1, answer2, answer3, cedula
-                    })
+                    body: JSON.stringify({ nombre, username, email, telefono, birthday, cedula, password, answer1, answer2, answer3 })
                 });
 
                 if (!response.ok) {
-                    throw new Error('Error al registrar los datos');
+                    throw new Error('Error en el registro');
                 }
 
-                alert('Usuario registrado con éxito');
-                window.location.href = '/login.html';
+                alert('Registro exitoso, por favor inicia sesión');
+                document.getElementById('register-form').reset();
+                document.getElementById('register-form').style.display = 'none';
+                document.getElementById('login-form').style.display = 'block';
             } catch (error) {
                 document.getElementById('message').innerText = error.message;
                 document.getElementById('message').style.display = 'block';
             }
         }
 
-        async function fetchDatosRegistroCivil() {
-            const cedulaInput = document.getElementById('reg-cedula');
-            const cedula = cedulaInput.value.trim();
-
-            if (cedula.length === 0) {
-                alert("Por favor, ingresa una cédula.");
-                return;
-            }
+        async function handleTwoFactor(event) {
+            event.preventDefault();
+            const verificationCode = document.getElementById('verification-code').value;
 
             try {
-                const response = await fetch(`/api/registrocivil/registro-civil/${cedula}`);
-                const data = await response.json();
+                const response = await fetch('/usuarios/verificar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ verificationCode })
+                });
 
-                if (data.success) {
-                    document.getElementById('message').innerText = 'Cédula verificada correctamente.';
-                    document.getElementById('message').style.display = 'block';
-                } else {
-                    document.getElementById('message').innerText = 'Error al verificar la cédula.';
+                if (!response.ok) {
+                    throw new Error('Código incorrecto');
                 }
+
+                window.location.href = '/inicio.html';
             } catch (error) {
-                alert("Error: " + error.message);
+                document.getElementById('message').innerText = error.message;
+                document.getElementById('message').style.display = 'block';
             }
         }
 
-        let deferredPrompt;
+        function fetchDatosRegistroCivil() {
+            const cedula = document.getElementById('reg-cedula').value;
 
-        window.addEventListener('beforeinstallprompt', (event) => {
-            event.preventDefault();
-            deferredPrompt = event;
-
-            const installButton = document.querySelector('#install-button');
-            installButton.style.display = 'block';
-
-            installButton.addEventListener('click', () => {
-                deferredPrompt.prompt();
-            });
-        });
+            if (cedula.length === 10) {
+                fetch(`/usuarios/validar-cedula/${cedula}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.valid) {
+                            alert('Cédula válida');
+                        } else {
+                            alert('Cédula inválida');
+                        }
+                    })
+                    .catch(error => alert('Error al verificar la cédula'));
+            } else {
+                alert('Por favor ingrese una cédula de 10 dígitos');
+            }
+        }
     </script>
 </body>
 </html>
+
