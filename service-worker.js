@@ -1,8 +1,6 @@
 const CACHE_NAME = 'kawaipet-cache-v1';
 const urlsToCache = [
   '/',  // Página de inicio
-
-  // Archivos HTML
   '/html/accesorios.html',
   '/html/alimentos.html',
   '/html/articulos.html',
@@ -21,11 +19,8 @@ const urlsToCache = [
   '/html/reservacionhotel.html',
   '/html/seguimientoveterinaria.html',
   '/html/tarjetas.html',
-
   '/icons/go.png',
   '/icons/lo.png',
-
-  // Archivos CSS
   '/css/agendar-citaveterinaria.css',
   '/css/alimentos.css',
   '/css/articulos.css',
@@ -51,7 +46,20 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Cache opened');
-        return cache.addAll(urlsToCache);
+        return Promise.all(
+          urlsToCache.map((url) => {
+            return fetch(url)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error('Error al obtener el archivo: ' + url);
+                }
+                return cache.put(url, response);
+              })
+              .catch((error) => {
+                console.error('Error al agregar al caché:', error);
+              });
+          })
+        );
       })
   );
 });
@@ -65,28 +73,10 @@ self.addEventListener('fetch', (event) => {
           return response; // Si está en caché, devuélvelo
         }
 
-        return fetch(event.request)
-          .then((response) => {
-            // Verificar que la respuesta sea válida
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clonar la respuesta para cachearla
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          });
-      })
-      .catch((error) => {
-        console.error('Fetch falló:', error);
-        // Opción: devolver una página personalizada de error
-        return caches.match('/html/error.html');
+        return fetch(event.request).catch((error) => {
+          console.error('Fetch falló:', error);
+          return caches.match('/html/error.html'); // Devuelve una página de error si la red falla
+        });
       })
   );
 });
@@ -105,5 +95,6 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-})
+});
+
 
