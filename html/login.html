@@ -229,12 +229,18 @@
     </script>
     <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js').then((registration) => {
-    console.log('Service Worker registrado con éxito:', registration);
-  }).catch((error) => {
-    console.log('Error al registrar el Service Worker:', error);
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js') // Ruta correcta del Service Worker
+      .then((registration) => {
+        console.log('Service Worker registrado con éxito:', registration);
+      })
+      .catch((error) => {
+        console.log('Error al registrar el Service Worker:', error);
+      });
   });
 }
+
 
 </script>
 
