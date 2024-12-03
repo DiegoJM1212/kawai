@@ -151,7 +151,8 @@ app.get('/banco', (req, res) => {
 });
 
 app.get('/mascotas', (req, res) => {
-    res.sendFile(path.join(__dirname, 'html', 'mascotasapi.html'));
+    const apiUrl = process.env.API2_URL || 'https://adop.onrender.com';
+    res.render(path.join(__dirname, 'html', 'mascotasapi.html'), { apiUrl });
 });
 
 // Ruta para 'recuperarpass.html'
