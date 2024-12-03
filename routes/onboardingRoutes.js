@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { checkOnboarding, showOnboarding, finishOnboarding } = require('../controladores/onboardingController');
+// Asegúrate de importar todas las funciones que necesitas, incluida showLogin
+const { checkOnboarding, showOnboarding, finishOnboarding, showLogin } = require('../controladores/onboardingController');
+
 // Ruta para mostrar el onboarding
 router.get('/onboarding', showOnboarding);
 
@@ -11,3 +13,4 @@ router.get('/', showLogin);
 router.get('/login', showLogin);
 
 module.exports = router;
+
