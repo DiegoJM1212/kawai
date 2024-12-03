@@ -188,7 +188,7 @@ async function verificarCodigo(req, res) {
             req.session.verificationCode = null;
 
             // Redirigir a la página de inicio de sesión sin mostrar un mensaje de éxito
-            return res.redirect('/login.html');  // O la ruta correspondiente a tu página de inicio de sesión
+            return res.redirect('/inicio.html');  // O la ruta correspondiente a tu página de inicio de sesión
         } else {
             return res.status(401).json({ message: 'Código de verificación incorrecto' });
         }
