@@ -34,10 +34,11 @@
     <footer>
         <p>&copy; 2024 Todos los derechos reservados</p>
     </footer>
-<  <script>
-        const API2_URL = 'https://adop.onrender.com';
-        
- async function cargarMascotas() {
+
+    <script>
+        const API2_URL = 'https://adop.onrender.com'; // Eliminar apóstrofe extra
+
+        async function cargarMascotas() {
             try {
                 console.log('API2_URL:', API2_URL); // Log the API URL
                 const response = await fetch(`${API2_URL}/api/mascotas`);
@@ -69,8 +70,6 @@
             }
         }
 
-    
-
         function mostrarMascotaSeleccionada(mascotaId, mascotas) {
             const mascota = mascotas.find(m => m.id === parseInt(mascotaId));
             const contenedor = document.getElementById('mascotaSeleccionada');
@@ -94,15 +93,14 @@
             }
         }
 
-
         function mostrarError(mensaje) {
             const errorElement = document.getElementById('error-message');
             errorElement.textContent = mensaje;
             errorElement.style.display = 'block';
-            console.error('Error mostrado:', mensaje); // Log the error message
+            console.error('Error mostrado:', mensaje);
         }
 
-       window.onload = cargarMascotas;
+        window.onload = cargarMascotas;
     </script>
 </body>
 </html>
