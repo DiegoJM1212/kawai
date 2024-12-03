@@ -1,7 +1,7 @@
 {
   "name": "KawaiPet - Tu App Veterinaria",
   "short_name": "KawaiPet",
-  "start_url": "/onboarding", 
+  "start_url": "/onboarding.html", 
   "display": "standalone",
   "background_color": "#3b2950",
   "theme_color": "#e93f76",
