@@ -37,15 +37,19 @@
 <  <script>
         const API2_URL = '<%= apiUrl %>';
         
-        async function cargarMascotas() {
+ async function cargarMascotas() {
             try {
+                console.log('API2_URL:', API2_URL); // Log the API URL
                 const response = await fetch(`${API2_URL}/api/mascotas`);
+                console.log('Response status:', response.status); // Log the response status
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const mascotas = await response.json();
+                console.log('Mascotas:', mascotas); // Log the received data
 
                 const select = document.getElementById('mascotasSelect');
+                select.innerHTML = '<option value="" disabled selected>Selecciona una mascota</option>';
 
                 mascotas.forEach(mascota => {
                     const option = document.createElement('option');
@@ -60,10 +64,12 @@
                 });
 
             } catch (error) {
-                console.error('Error al cargar las mascotas:', error);
-                mostrarError('Error al cargar las mascotas. Por favor, intente de nuevo más tarde.');
+                console.error('Error detallado al cargar las mascotas:', error);
+                mostrarError('Error al cargar las mascotas. Por favor, intente de nuevo más tarde. Detalles: ' + error.message);
             }
         }
+
+    
 
         function mostrarMascotaSeleccionada(mascotaId, mascotas) {
             const mascota = mascotas.find(m => m.id === parseInt(mascotaId));
@@ -88,10 +94,12 @@
             }
         }
 
+
         function mostrarError(mensaje) {
             const errorElement = document.getElementById('error-message');
             errorElement.textContent = mensaje;
             errorElement.style.display = 'block';
+            console.error('Error mostrado:', mensaje); // Log the error message
         }
 
        window.onload = cargarMascotas;
