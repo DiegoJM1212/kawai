@@ -6,7 +6,7 @@ const { checkOnboarding, showOnboarding, finishOnboarding } = require('../contro
 router.get('/', showOnboarding);
 
 // Ruta para el login
-router.get('/login', checkOnboarding, (req, res) => {
+router.get('/', checkOnboarding, (req, res) => {
   res.render('login');  // Muestra el login si ya pasó el onboarding
 });
 
