@@ -1,28 +1,19 @@
-const COOKIE_OPTIONS = {
-  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 año
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'strict'
+// controllers/onboardingController.js
+
+// Función para mostrar el onboarding (si el usuario no ha completado el onboarding)
+const showOnboarding = (req, res) => {
+  res.render('onboarding'); // Muestra la vista del onboarding
 };
 
-// Middleware para verificar si el usuario ha completado el onboarding
-const checkOnboarding = (req, res, next) => {
-  if (req.cookies.onboardingSeen) {
-    return next();  // Si ya pasó el onboarding, permite avanzar
+// Función para mostrar el login solo si el onboarding está completo
+const showLogin = (req, res) => {
+  // Verificamos si el onboarding fue completado, ya sea con cookies o localStorage en frontend
+  if (req.cookies.onboardingSeen || req.query.onboardingCompleted === 'true') {
+    return res.render('login'); // Si ya completó el onboarding, muestra el login
   } else {
-    return res.redirect('/');  // Si no ha pasado el onboarding, vuelve a la raíz
+    return res.redirect('/onboarding'); // Si no completó el onboarding, redirige al onboarding
   }
 };
 
-// Renderiza la página de onboarding
-const showOnboarding = (req, res) => {
-  res.render('onboarding');  // Muestra la vista de onboarding
-};
-
-// Marca el onboarding como completado y redirige al login
-const finishOnboarding = (req, res) => {
-  res.cookie('onboardingSeen', 'true', COOKIE_OPTIONS);  // Marca el onboarding como completado
-  res.redirect('/login');  // Redirige al login después de completar el onboarding
-};
-
-module.exports = { checkOnboarding, showOnboarding, finishOnboarding };
+// Exportamos las funciones del controlador
+module.exports = { showOnboarding, showLogin };
