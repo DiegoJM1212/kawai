@@ -211,15 +211,17 @@
             navigator.serviceWorker.register('/service-worker.js');
         }
 
-        window.addEventListener('beforeinstallprompt', (event) => {
-            event.preventDefault();
-            deferredPrompt = event;
-            document.querySelector('#install-button').style.display = 'block';
+window.addEventListener('beforeinstallprompt', (event) => {
+    console.log('Evento beforeinstallprompt detectado');
+    event.preventDefault();
+    deferredPrompt = event;
+    document.querySelector('#install-button').style.display = 'block';
 
-            document.querySelector('#install-button').addEventListener('click', () => {
-                deferredPrompt.prompt();
-            });
-        });
+    document.querySelector('#install-button').addEventListener('click', () => {
+        deferredPrompt.prompt();
+    });
+});
+
     </script>
 </body>
 </html>
