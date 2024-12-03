@@ -99,7 +99,7 @@ app.use('/mascotas', mascotasRoutes); // Esto mantiene el controlador 'mascotasR
 app.use('/paypal', paypalRoutes); // Ruta de la API de PayPal
 
 // **Agregar la ruta para la API de tarjetas aquí**
-app.use('//tarjetas', tarjetasApiRoutes); // Ruta de la API de tarjetas
+app.use('/tarjetas', tarjetasApiRoutes); // Ruta de la API de tarjetas
 
 app.use('/veterinarios', veterinariosRoutes);   
 
@@ -109,7 +109,7 @@ app.use('/banco-central', bancoCentralRoutes);
 // Usar las rutas del registro civil
 app.use('/registrocivil', registroCivilRoutes);
 
-app.use('//seguros', segurosRoutes);
+app.use('/seguros', segurosRoutes);
 
 app.use('/onboarding', onboardingRoutes);
 
