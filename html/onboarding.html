@@ -1,3 +1,4 @@
+<!-- views/onboarding.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,16 +16,25 @@
       <div class="slide"><img src="https://i.imgur.com/idg1Iqi.png" alt="Hotel"></div>
       <div class="slide"><img src="https://i.imgur.com/fkgIP7H.png" alt="Bienvenido"></div>
     </div>
-    <!-- Formulario que finaliza el onboarding y redirige al login -->
-    <form action="/finish-onboarding" method="POST">
-      <button type="submit">Continuar</button>
-    </form>
+    <!-- Botón para completar el onboarding -->
+    <button id="completeOnboardingBtn">Completar Onboarding</button>
   </div>
-  <div id="modal" class="modal">
-    <img id="modal-image" src="" alt="Full Size Image">
-    <a href="#" class="close-modal">X</a>
-  </div>
-  <script src="/controladores/onboardingController.js"></script>
+
+  <script>
+    // Verifica si el onboarding ya fue completado usando localStorage
+    if (localStorage.getItem('onboardingCompleted') === 'true') {
+      window.location.href = '/login'; // Si ya completó el onboarding, redirige al login
+    }
+
+    // Acción cuando se hace clic en el botón de completar onboarding
+    document.getElementById('completeOnboardingBtn').addEventListener('click', function() {
+      // Marca el onboarding como completado en localStorage
+      localStorage.setItem('onboardingCompleted', 'true');
+      
+      // Redirige al login después de completar el onboarding
+      window.location.href = '/login'; 
+    });
+  </script>
 </body>
 </html>
 
