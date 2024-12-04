@@ -21,7 +21,6 @@ const citasApiRoutes = require('./routes/citasApiRoutes'); // Ruta de la API de 
 const citaEsteticaApiRoutes = require('./routes/citaEsteticaApiRoutes'); // Ruta de la API de cita estética
 const reservasRoutes = require('./routes/reservasapiRoutes');  // Asegúrate de la ruta correcta
 
-const mascotasRoutes = require('./routes/mascotasapiRoutes'); // Ajusta la ruta de acuerdo con tu estructura de carpetas
 
 // **Aquí agregamos las rutas para la API de PayPal** (nuevo código)
 const paypalRoute = require('./routes/paypalroute');  // Asegúrate de que la ruta esté correcta
@@ -37,9 +36,13 @@ const segurosRoutes = require('./routes/segurosRoutes');
 
 const registroCivilRoutes = require('./routes/registroCivil');
 const onboardingRoutes = require('./routes/onboardingRoutes');
+
+
+
 const mascotasservice = require('./servicios/mascotasservice');
 const veterinariosservice = require('./servicios/veterinariosservice');
 const segurosservice = require('./servicios/segurosservice');
+
 const db = require('./data/db'); // Conexión a la base de datos
 
 const app = express();
@@ -92,9 +95,6 @@ app.use('/api/cita-estetica', citaEsteticaApiRoutes); // Ruta de la API de cita 
 // Usar la ruta de la API de reservas
 app.use('/api/reservarHotel', reservasRoutes);  // Esta es la ruta correcta
 
-
-// Usar la ruta de la API de mascotas
-app.use('/mascotas', mascotasRoutes); // Esto mantiene el controlador 'mascotasRoutes' y redirige correctamente las rutas a las APIs externas si es necesario.
 
 
 // **Agregar la ruta para la API de PayPal aquí**
