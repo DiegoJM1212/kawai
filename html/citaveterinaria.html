@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendar Cita Veterinaria</title>
     <link rel="stylesheet" href="/css/agendar-citaveterinaria.css">
-    
 </head>
 <body>
     <header>
         <img src="https://i.imgur.com/9NkTv9N.jpg" alt="Logo de KawaiPet" class="logo">
-
         <h1>Cita Veterinaria</h1>
     </header>
 
@@ -67,43 +65,43 @@
     </footer>
 
     <script>
-        // Llamar a la API de veterinarios y seguros al cargar la página y rellenar los selects
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Cargar veterinarios
+        // Función para cargar veterinarios y seguros desde las APIs
+        async function cargarVeterinariosYSeguros() {
             try {
-                const responseVeterinarios = await fetch('/veterinarios');
-                const veterinarios = await responseVeterinarios.json();
+                // Obtener lista de veterinarios
+                const veterinariosResponse = await fetch('/api/veterinarios');
+                const veterinarios = await veterinariosResponse.json();
 
-                const selectVeterinario = document.getElementById('veterinario');
-                veterinarios.forEach(vet => {
+                // Obtener lista de seguros
+                const segurosResponse = await fetch('/api/seguros');
+                const seguros = await segurosResponse.json();
+
+                // Llenar los select de veterinarios
+                const veterinarioSelect = document.getElementById('veterinario');
+                veterinarios.forEach(veterinario => {
                     const option = document.createElement('option');
-                    option.value = vet.id; // Usa el campo correspondiente de la base de datos como valor
-                    option.textContent = vet.nombre; // Usa el nombre del veterinario
-                    selectVeterinario.appendChild(option);
+                    option.value = veterinario.id;
+                    option.textContent = veterinario.nombre;
+                    veterinarioSelect.appendChild(option);
                 });
-            } catch (error) {
-                console.error('Error al cargar los veterinarios:', error);
-                alert('Error al cargar la lista de veterinarios.');
-            }
 
-            // Cargar seguros
-            try {
-                const responseSeguros = await fetch('http://localhost:3003/seguros');
-                const seguros = await responseSeguros.json();
-
-                const selectSeguro = document.getElementById('seguro');
+                // Llenar los select de seguros
+                const seguroSelect = document.getElementById('seguro');
                 seguros.forEach(seguro => {
                     const option = document.createElement('option');
-                    option.value = seguro.id; // Usa el ID como valor
-                    option.textContent = seguro.nombre; // Usa el nombre del seguro
-                    selectSeguro.appendChild(option);
+                    option.value = seguro.id;
+                    option.textContent = seguro.nombre;
+                    seguroSelect.appendChild(option);
                 });
             } catch (error) {
-                console.error('Error al cargar los seguros:', error);
-                alert('Error al cargar la lista de seguros.');
+                console.error('Error al cargar veterinarios y seguros:', error);
             }
-        });
+        }
 
+        // Llamamos a la función para cargar los veterinarios y seguros cuando se carga la página
+        window.onload = cargarVeterinariosYSeguros;
+
+        // Comprobar disponibilidad al hacer clic en el botón
         document.querySelector('.check-availability').addEventListener('click', async () => {
             const fecha = document.getElementById('fecha').value;
             const hora = document.getElementById('hora').value;
@@ -135,17 +133,17 @@
             }
         });
 
+        // Enviar el formulario de cita
         document.getElementById('citaForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const metodoPago = document.getElementById('metodoPago').value;
+            event.preventDefault();
+            const metodoPago = document.getElementById('metodoPago').value;
 
-    if (metodoPago === 'tarjeta') {
-        window.location.href = '/banco'; // Página de pago con tarjeta
-    } else if (metodoPago === 'paypal') {
-        window.location.href = '/paypal'; // Página de pago con PayPal
-    }
-});
-
+            if (metodoPago === 'tarjeta') {
+                window.location.href = '/banco'; // Página de pago con tarjeta
+            } else if (metodoPago === 'paypal') {
+                window.location.href = '/paypal'; // Página de pago con PayPal
+            }
+        });
     </script>
 </body>
 </html>
