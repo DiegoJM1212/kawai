@@ -241,7 +241,7 @@
             const cedula = document.getElementById('reg-cedula').value;
 
             if (cedula.length === 10) {
-                fetch(`/usuarios/validar-cedula/${cedula}`)
+                fetch(/usuarios/validar-cedula/${cedula})
                     .then(response => response.json())
                     .then(data => {
                         if (data.valid) {
@@ -256,47 +256,18 @@
             }
         }
 
-        // Mostrar el botón de instalación si está disponible
-        let deferredPrompt;
-        const installButton = document.getElementById('install-button');
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.style.display = 'block';  // Mostrar el botón de instalar
-        });
-
-        installButton.addEventListener('click', (e) => {
-            // Mostrar el prompt de instalación
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('La app ha sido instalada');
-                } else {
-                    console.log('La app no fue instalada');
-                }
-                deferredPrompt = null;
-            });
-        });
-
-   
-  // Verifica si el navegador soporta Service Workers
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // Registra el Service Worker
-      navigator.serviceWorker.register('/sw.js')
-        .then((registration) => {
-          console.log('Service Worker registrado con éxito:', registration);
-        })
-        .catch((error) => {
-          console.log('Error al registrar el Service Worker:', error);
-        });
-    });
-  }
-
-
+        if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Registra el Service Worker
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('Service Worker registrado con éxito:', registration);
+      })
+      .catch((error) => {
+        console.log('Error al registrar el Service Worker:', error);
+      });
+  });
+}
     </script>
 </body>
-</html>
-
-
+</html>  
