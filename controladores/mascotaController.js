@@ -1,32 +1,55 @@
-const db = require('../data/db'); // Asegúrate de tener la conexión a la base de datos aquí
+const { poolPromise, sql } = require('../data/db');
 
-// Controlador para obtener los detalles de la mascota
-exports.obtenerDetallesMascota = async (req, res) => {
-    const mascotaId = req.params.id;
-    const usuarioId = req.session.userId; // Suponiendo que el ID del usuario está guardado en la sesión
+async function obtenerDetallesMascota(req, res) {
+    const { id } = req.params; // Asumiendo que el ID de la mascota viene en la URL
+    const usuarioId = req.session.userId; // Asumiendo que tienes el ID del usuario en la sesión
 
+    let connection;
     try {
-        // Obtener detalles de la mascota
-        const detallesMascota = await db.query('SELECT * FROM mascotas WHERE id = ? AND usuario_id = ?', [mascotaId, usuarioId]);
+        connection = await poolPromise;
 
-        // Si no se encuentra la mascota o no pertenece al usuario, enviar un error
-        if (detallesMascota.length === 0) {
-            return res.status(404).send('Mascota no encontrada o no pertenece a este usuario');
+        // Obtener detalles de la mascota
+        const resultMascota = await connection.request()
+            .input('id', sql.Int, id)
+            .query('SELECT * FROM mascotas WHERE id = @id');
+
+        if (resultMascota.recordset.length === 0) {
+            return res.status(404).send('Mascota no encontrada');
         }
 
-        // Obtener seguimiento veterinario de la mascota
-        const seguimiento = await db.query('SELECT * FROM seguimiento_veterinario WHERE mascota_id = ?', [mascotaId]);
+        const mascota = resultMascota.recordset[0];
 
-        // Renderizar la vista con los detalles de la mascota y el seguimiento
-        res.render('detalles_mascota', {
-            detalles: {
-                ...detallesMascota[0],
-                seguimiento: seguimiento
-            }
-        });
+        // Obtener detalles del usuario
+        const resultUsuario = await connection.request()
+            .input('id', sql.Int, usuarioId)
+            .query('SELECT nombre, email, telefono FROM usuarios WHERE id = @id');
+
+        if (resultUsuario.recordset.length === 0) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+
+        const usuario = resultUsuario.recordset[0];
+
+        // Obtener seguimientos veterinarios
+        const resultSeguimientos = await connection.request()
+            .input('mascotaId', sql.Int, id)
+            .query('SELECT * FROM seguimiento_veterinario WHERE mascota_id = @mascotaId ORDER BY fecha DESC');
+
+        const seguimientos = resultSeguimientos.recordset;
+
+        res.render('detalles-mascota', { mascota, usuario, seguimientos });
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error en el servidor');
+        console.error('Error al obtener detalles de la mascota:', error);
+        res.status(500).send('Error al cargar los detalles de la mascota');
+    } finally {
+        if (connection) {
+            connection.close();
+        }
     }
+}
+
+module.exports = {
+    obtenerDetallesMascota
 };
+
 
