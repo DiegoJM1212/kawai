@@ -1,10 +1,11 @@
-const { poolPromise, sql } = require('../data/db');
+const { poolPromise, sql } = require('../data/db'); // Asegúrate de que tienes configurado el acceso a la base de datos.
 
 async function agendarCita(req, res) {
+    let connection;
     try {
         const { id_usuario, nombrePropietario, nombreMascota, consulta, fecha, hora } = req.body;
 
-        const connection = await poolPromise;
+        connection = await poolPromise;
 
         // Inserta la cita en la tabla existente
         await connection.request()
@@ -31,8 +32,7 @@ async function agendarCita(req, res) {
         console.error('Error al agendar cita:', error);
 
         // Registrar error en la auditoría
-        try {
-            const connection = await poolPromise;
+        if (connection) {
             await connection.request()
                 .input('usuario_id', sql.Int, req.body.id_usuario)
                 .input('accion', sql.VarChar, 'Agendar Cita')
@@ -40,19 +40,24 @@ async function agendarCita(req, res) {
                 .input('resultado', sql.VarChar, 'Error')
                 .query(`INSERT INTO auditoria (usuario_id, accion, descripcion, resultado) 
                         VALUES (@usuario_id, @accion, @descripcion, @resultado)`);
-        } catch (auditError) {
-            console.error('Error al registrar en auditoría:', auditError);
         }
 
         res.status(500).send('Error al agendar la cita');
+    } finally {
+        if (connection) {
+            // Cerrar la conexión para evitar fugas de conexión
+            connection.close();
+        }
     }
 }
 
+// Función para comprobar la disponibilidad de citas con auditoría
 async function comprobarDisponibilidad(req, res) {
+    let connection;
     try {
         const { fecha, hora } = req.body;
 
-        const connection = await poolPromise;
+        connection = await poolPromise;
 
         const result = await connection.request()
             .input('fecha', sql.Date, fecha)
@@ -75,8 +80,7 @@ async function comprobarDisponibilidad(req, res) {
         console.error('Error al comprobar disponibilidad:', error);
 
         // Registrar error en la auditoría
-        try {
-            const connection = await poolPromise;
+        if (connection) {
             await connection.request()
                 .input('usuario_id', sql.Int, req.session.userId)
                 .input('accion', sql.VarChar, 'Comprobar Disponibilidad')
@@ -84,11 +88,14 @@ async function comprobarDisponibilidad(req, res) {
                 .input('resultado', sql.VarChar, 'Error')
                 .query(`INSERT INTO auditoria (usuario_id, accion, descripcion, resultado) 
                         VALUES (@usuario_id, @accion, @descripcion, @resultado)`);
-        } catch (auditError) {
-            console.error('Error al registrar en auditoría:', auditError);
         }
 
         res.status(500).send('Error al comprobar la disponibilidad');
+    } finally {
+        if (connection) {
+            // Cerrar la conexión para evitar fugas de conexión
+            connection.close();
+        }
     }
 }
 
@@ -96,3 +103,4 @@ module.exports = {
     agendarCita,
     comprobarDisponibilidad,
 };
+
