@@ -3,109 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Lista de mascotas disponibles para adopción en KawaiPet">
-    <title>Lista de Mascotas en Adopción - KawaiPet</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-            padding: 20px;
-        }
-        header {
-            background: #50b3a2;
-            color: white;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #e8491d 3px solid;
-            text-align: center;
-        }
-        header a {
-            color: #ffffff;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 16px;
-        }
-        header .logo {
-            width: 70px;
-            height: auto;
-        }
-        header h1 {
-            margin: 0;
-            padding: 10px 0;
-        }
-        .btn-regresar {
-            display: inline-block;
-            padding: 10px 15px;
-            background: #e8491d;
-            color: #ffffff;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .error-message {
-            background-color: #ffdddd;
-            border: 1px solid #f44336;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-        .categorias {
-            margin-top: 20px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .mascota-seleccionada {
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .mascota-seleccionada img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-        .adoptar-btn {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .adoptar-btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        footer {
-            background: #50b3a2;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    <title>Lista de Mascotas en Adopción</title>
+    <link rel="stylesheet" href="css/mascotasapi.css">
 </head>
 <body>
     <header>
@@ -116,7 +15,7 @@
         </a>
     </header>
 
-    <div class="container">
+    <div class="container mx-auto p-4">
         <div id="error-message" class="error-message" style="display: none;"></div>
         <div class="categorias">
             <div class="categoria">
@@ -133,79 +32,50 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 KawaiPet - Todos los derechos reservados</p>
+        <p>&copy; 2024 Todos los derechos reservados</p>
     </footer>
 
-    <script>
-        // Usamos una API mock para demostración
-        const API2_URL = 'https://mocki.io/v1/d4867d8b-b5d5-4a48-a4ab-79131b5809b8';
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const mascotasSelect = document.getElementById('mascotasSelect');
+        const mascotaSeleccionada = document.getElementById('mascotaSeleccionada');
+        const errorMessage = document.getElementById('error-message');
 
-        // Función que se ejecutará al cargar la página
-        window.onload = async function() {
-            await cargarMascotas();
-        };
+        try {
+            // Llama a la API de mascotas
+            const response = await fetch('/api/mascotas');
+            if (!response.ok) throw new Error('Error al obtener los datos de la API.');
 
-        async function cargarMascotas() {
-            try {
-                const response = await fetch(API2_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+            const mascotas = await response.json();
 
-                const mascotas = await response.json();
-                
-                const select = document.getElementById('mascotasSelect');
-                if (select) {
-                    select.innerHTML = '<option value="" disabled selected>Selecciona una mascota</option>';
+            // Llena el select con las opciones de mascotas
+            mascotas.forEach(mascota => {
+                const option = document.createElement('option');
+                option.value = mascota.id;
+                option.textContent = `${mascota.nombre} (${mascota.tipo})`;
+                mascotasSelect.appendChild(option);
+            });
 
-                    mascotas.forEach((mascota, index) => {
-                        const option = document.createElement('option');
-                        option.value = index;
-                        option.textContent = `${mascota.name} (${mascota.city})`;
-                        select.appendChild(option);
-                    });
+            // Muestra la información de la mascota seleccionada
+            mascotasSelect.addEventListener('change', () => {
+                const selectedId = mascotasSelect.value;
+                const mascota = mascotas.find(m => m.id == selectedId);
 
-                    select.addEventListener('change', (event) => {
-                        const mascotaId = event.target.value;
-                        mostrarMascotaSeleccionada(mascotaId, mascotas);
-                    });
-                }
-
-            } catch (error) {
-                console.error('Error al cargar las mascotas:', error);
-                mostrarError('Error al cargar las mascotas. Por favor, intente de nuevo más tarde.');
-            }
-        }
-
-        function mostrarMascotaSeleccionada(mascotaId, mascotas) {
-            const mascota = mascotas[parseInt(mascotaId)];
-            const contenedor = document.getElementById('mascotaSeleccionada');
-
-            if (contenedor && mascota) {
-                contenedor.innerHTML = `
-                    <h3>${mascota.name}</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <img src="https://via.placeholder.com/300x200" alt="${mascota.name}" style="width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
-                        <div>
-                            <p><strong>Ciudad:</strong> ${mascota.city}</p>
-                            <p><strong>Estado:</strong> Disponible para adopción</p>
-                            <button class="adoptar-btn">Adoptar</button>
-                        </div>
-                    </div>
+                // Renderiza los detalles de la mascota
+                mascotaSeleccionada.innerHTML = `
+                    <h3>${mascota.nombre}</h3>
+                    <p><strong>Tipo:</strong> ${mascota.tipo}</p>
+                    <p><strong>Disponibilidad:</strong> ${mascota.disponibilidad ? 'Disponible' : 'No disponible'}</p>
+                    <img src="${mascota.foto}" alt="${mascota.nombre}" class="mascota-img" style="max-width: 300px; border-radius: 8px;">
                 `;
-            } else {
-                contenedor.innerHTML = '<p>Selecciona una mascota para ver más detalles.</p>';
-            }
+            });
+        } catch (error) {
+            console.error(error);
+            errorMessage.style.display = 'block';
+            errorMessage.textContent = 'Error al cargar las mascotas. Por favor, inténtalo más tarde.';
         }
+    });
+</script>
 
-        function mostrarError(mensaje) {
-            const errorElement = document.getElementById('error-message');
-            if (errorElement) {
-                errorElement.textContent = mensaje;
-                errorElement.style.display = 'block';
-            }
-        }
-    </script>
 </body>
 </html>
