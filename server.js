@@ -24,7 +24,7 @@ const reservasRoutes = require('./routes/reservasapiRoutes');  // Asegúrate de 
 const mascotasRoutes = require('./routes/mascotasapiRoutes'); // Ajusta la ruta de acuerdo con tu estructura de carpetas
 
 // **Aquí agregamos las rutas para la API de PayPal** (nuevo código)
-const paypalRoutes = require('./routes/paypalroute'); // Ruta de la API de PayPal
+const paypalRoute = require('./routes/paypalroute');  // Asegúrate de que la ruta esté correcta
 
 // **Aquí agregamos las rutas para la API de tarjetas** (nuevo código)
 const tarjetasApiRoutes = require('./routes/tarjetasRoutes'); // Ruta de la API de tarjetas
@@ -37,7 +37,9 @@ const segurosRoutes = require('./routes/segurosRoutes');
 
 const registroCivilRoutes = require('./routes/registroCivil');
 const onboardingRoutes = require('./routes/onboardingRoutes');
-
+const mascotasservice = require('./servicios/mascotasservice');
+const veterinariosservice = require('./servicios/veterinariosservice');
+const segurosservice = require('./servicios/segurosservice');
 const db = require('./data/db'); // Conexión a la base de datos
 
 const app = express();
@@ -96,10 +98,9 @@ app.use('/mascotas', mascotasRoutes); // Esto mantiene el controlador 'mascotasR
 
 
 // **Agregar la ruta para la API de PayPal aquí**
-app.use('/paypal', paypalRoutes); // Ruta de la API de PayPal
-
+app.use('/api/paypal', paypalRoute);  
 // **Agregar la ruta para la API de tarjetas aquí**
-app.use('/tarjetas', tarjetasApiRoutes); // Ruta de la API de tarjetas
+app.use('/api/tarjetas', tarjetasApiRoutes); // Ruta de la API de tarjetas
 
 app.use('/veterinarios', veterinariosRoutes);   
 
@@ -112,6 +113,12 @@ app.use('/registrocivil', registroCivilRoutes);
 app.use('/seguros', segurosRoutes);
 
 app.use('/onboarding', onboardingRoutes);
+
+
+app.use('/api', mascotasservice); // Conectar la API de mascotas
+app.use('/api', veterinariosservice);
+app.use('/api', segurosservice);
+
 
 // Rutas para servir las páginas HTML
 app.get('/inicio', (req, res) => {
