@@ -13,21 +13,6 @@
         <h1>KawaiPet - Cuidamos a tu mascota, como se merece</h1>
     </header>
 
-    <!-- Botón para iniciar el onboarding -->
-    <button id="start-onboarding" style="display: none;">Iniciar Onboarding</button>
-    <h2>onboarding</h2>
-    <div id="onboarding" style="display: none;">
-        <!-- Carrusel de imágenes -->
-        <div id="slides" class="image-carousel">
-            <div class="slide"><img src="https://i.imgur.com/HNeX5uU.png" alt="Veterinaria"></div>
-            <div class="slide"><img src="https://i.imgur.com/47cl7mh.png" alt="Estética"></div>
-            <div class="slide"><img src="https://i.imgur.com/idg1Iqi.png" alt="Hotel"></div>
-            <div class="slide"><img src="https://i.imgur.com/fkgIP7H.png" alt="Bienvenido"></div>
-        </div>
-        
-        <button id="finish-onboarding">Terminar Onboarding</button>
-    </div>
-
     <div class="form-container">
         <div id="message" style="display: none; color: red;"></div> <!-- Para mostrar mensajes -->
 
@@ -107,31 +92,14 @@
     </footer>
 
     <!-- Botón para instalar la aplicación -->
-    <button id="install-button" style="display: none;" title="Instalar aplicación">Instalar</button>
+    <button id="install-button" style="display: block;" title="Instalar aplicación">Instalar</button>
 
     <script>
-        // Mostrar el onboarding si el usuario no ha completado el proceso
         window.onload = function() {
-            if (localStorage.getItem('onboardingCompleted') === 'true') {
-                document.getElementById('login-form').style.display = 'block';
-            } else {
-                document.getElementById('start-onboarding').style.display = 'block';
-            }
+            // Mostrar siempre el formulario de login al cargar la página
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('install-button').style.display = 'block'; // Asegurarse de que el botón de instalación sea visible
         };
-
-        // Muestra el onboarding cuando el usuario haga clic en "Iniciar Onboarding"
-        document.getElementById('start-onboarding').addEventListener('click', function () {
-            document.getElementById('onboarding').style.display = 'block';  // Muestra el onboarding
-            document.getElementById('login-form').style.display = 'none';  // Oculta el login
-            document.getElementById('register-form').style.display = 'none';  // Oculta el registro
-        });
-
-        // Al terminar el onboarding
-        document.getElementById('finish-onboarding').addEventListener('click', function () {
-            localStorage.setItem('onboardingCompleted', 'true');  // Marca el onboarding como completado
-            document.getElementById('onboarding').style.display = 'none';  // Oculta el onboarding
-            document.getElementById('login-form').style.display = 'block';  // Muestra el login
-        });
 
         document.getElementById('show-register').addEventListener('click', function (e) {
             e.preventDefault();
@@ -258,4 +226,5 @@
     </script>
 </body>
 </html>
+
 
