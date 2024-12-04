@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagar con Tarjeta</title>
-    <link rel="stylesheet" href="../css/banco.css"> <!-- Vincula el CSS -->
+    <link rel="stylesheet" href="../css/banco.css">
 </head>
 <body>
     <div class="container">
         <h1>Pagar con Tarjeta de Crédito/Débito</h1>
 
-        <!-- Formulario para realizar el pago con tarjeta -->
         <form id="tarjetaForm">
             <label for="numeroTarjeta">Número de Tarjeta</label>
             <input type="text" id="numeroTarjeta" name="numeroTarjeta" placeholder="#### #### #### ####" required>
@@ -30,7 +29,6 @@
             <button type="submit">Pagar con Tarjeta</button>
         </form>
 
-        <!-- Mensajes de error o éxito -->
         <p id="message" class="alert"></p>
     </div>
 
@@ -53,9 +51,9 @@
                     body: JSON.stringify({
                         numeroTarjeta,
                         nombreTitular,
-                        fechaExpiracion: `${fechaExpiracion}-01`, // Formato de fecha compatible
+                        fechaExpiracion: `${fechaExpiracion}-01`,
                         cvv,
-                        monto
+                        monto: parseFloat(monto)
                     })
                 });
 
@@ -64,18 +62,15 @@
                 const messageElement = document.getElementById('message');
                 messageElement.classList.remove('alert', 'success');
 
-                if (data.success) { // Cambia esta línea a la propiedad correcta
+                if (response.ok) {
                     messageElement.innerText = 'Pago realizado con éxito';
                     messageElement.classList.add('success');
-                    // Redirige a inicio.html en caso de éxito
-                    window.location.href = 'inicio.html';
-                } else {
-                    messageElement.innerText = 'Pago realizado con éxito';
-                    messageElement.classList.add('alert');
-                    // Redirige a inicio.html en caso de error
                     setTimeout(() => {
                         window.location.href = 'inicio.html';
-                    }, 2000); // Redirección con un pequeño retraso para que el usuario vea el mensaje
+                    }, 2000);
+                } else {
+                    messageElement.innerText = data.error || 'Error al procesar el pago';
+                    messageElement.classList.add('alert');
                 }
             } catch (error) {
                 console.error('Error al procesar el pago:', error);
@@ -83,13 +78,9 @@
                 messageElement.classList.remove('success');
                 messageElement.classList.add('alert');
                 messageElement.innerText = 'Error al procesar el pago';
-
-                // Redirige a inicio.html en caso de error
-                setTimeout(() => {
-                    window.location.href = 'inicio.html';
-                }, 2000); // Redirección con un pequeño retraso
             }
         });
     </script>
 </body>
 </html>
+
