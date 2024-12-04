@@ -1,22 +1,17 @@
-const axios = require('axios');
+const path = require('path');
 
-const API2_URL = 'https://adop.onrender.com';  // Asegúrate de que esta URL sea la correcta
+const mascotasservice = require('../servicios/mascotasservice');
 
-
-const obtenerMascotas = async () => {
+const renderMascotasPage = async (req, res) => {
     try {
-        console.log('Attempting to fetch mascotas from:', API2_URL);
-        const response = await axios.get(`${API2_URL}/mascotas`);
-        console.log('Response received:', response.status, response.data);
-        return response.data;
+        const mascotas = await mascotasservice.obtenerMascotas(); // Obtén las mascotas desde el servicio
+        res.json(mascotas);  // Devuelve las mascotas como respuesta en formato JSON
     } catch (error) {
-        console.error('Error detallado al obtener las mascotas:', error.response ? error.response.data : error.message);
-        throw new Error('Error al obtener las mascotas desde la API: ' + (error.response ? error.response.data : error.message));
+        console.error('Error al obtener las mascotas:', error);
+        res.status(500).json({ error: 'Error al obtener las mascotas.' }); // Devuelve un error en caso de fallo
     }
 };
 
 module.exports = {
-    obtenerMascotas
+    renderMascotasPage
 };
-
-
