@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagar con PayPal</title>
-    <link rel="stylesheet" href="../css/paypal.css"> <!-- Vincula el CSS -->
+    <link rel="stylesheet" href="../css/paypal.css">
 </head>
 <body>
     <div class="container">
         <h1>Pagar con PayPal</h1>
         
-        <!-- Formulario para realizar el pago con PayPal -->
         <form id="paypalForm">
             <label for="monto">Monto a pagar:</label>
             <input type="number" id="monto" name="monto" value="50.00" required>
             <button type="submit">Pagar con PayPal</button>
         </form>
 
-        <!-- Mensajes de error o éxito pueden ir aquí -->
         <p id="message" class="alert"></p>
     </div>
 
@@ -25,33 +23,34 @@
         document.getElementById('paypalForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const monto = document.getElementById('monto').value;  // Obtener el monto del formulario
+            const monto = document.getElementById('monto').value;
 
-            // Realizamos una solicitud al backend para crear el pago con PayPal
             try {
-                const response = await fetch('/api/paypal/crear-pago-paypal', {
+                const response = await fetch('/api/paypal/crear-pago', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        monto: monto  // Enviar el monto al backend
-                    })
+                    body: JSON.stringify({ monto: monto })
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
                 const data = await response.json();
 
-                // Redirigimos al cliente a la URL de aprobación de PayPal
                 if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl;  // Redirigir al cliente
+                    window.location.href = data.redirectUrl;
                 } else {
-                    alert('Error al crear el pago con PayPal.');
+                    throw new Error('No se recibió una URL de redirección válida');
                 }
             } catch (error) {
                 console.error('Error al procesar el pago con PayPal:', error);
-                document.getElementById('message').innerText = 'Error al procesar el pago con PayPal.';
+                document.getElementById('message').innerText = 'Error al procesar el pago con PayPal. Por favor, inténtelo de nuevo.';
             }
         });
     </script>
 </body>
 </html>
+
