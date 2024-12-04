@@ -1,30 +1,12 @@
-const { poolPromise, sql } = require('../data/db'); // Asegúrate de que tienes configurado el acceso a la base de datos.
-const pagoConTarjeta = require('../controladores/tarjetasController');  // Aquí incluirías el archivo donde gestionas el pago con tarjeta (Stripe o el servicio que utilices)
-const pagoConPayPal = require('../controladores/paypal');    // Lo mismo con el controlador de PayPal
+const { poolPromise, sql } = require('../data/db');
 
 async function agendarCita(req, res) {
-    let connection;
     try {
-        const { id_usuario, nombrePropietario, nombreMascota, consulta, fecha, hora, metodoPago } = req.body;
+        const { id_usuario, nombrePropietario, nombreMascota, consulta, fecha, hora } = req.body;
 
-        // Verificar el método de pago y procesarlo antes de guardar la cita
-        let pagoExitoso = false;
-        if (metodoPago === 'tarjeta') {
-            // Llamar al controlador de pago con tarjeta
-            pagoExitoso = await pagoConTarjeta.procesarPago(req.body);
-        } else if (metodoPago === 'paypal') {
-            // Llamar al controlador de pago con PayPal
-            pagoExitoso = await pagoConPayPal.procesarPago(req.body);
-        }
+        const connection = await poolPromise;
 
-        if (!pagoExitoso) {
-            return res.status(400).send('Error al procesar el pago.');
-        }
-
-        // Si el pago fue exitoso, procedemos a agendar la cita
-        connection = await poolPromise;
-
-        // Inserta la cita en la base de datos
+        // Inserta la cita en la tabla existente
         await connection.request()
             .input('id_usuario', sql.Int, id_usuario)
             .input('nombre_propietario', sql.VarChar, nombrePropietario)
@@ -49,7 +31,8 @@ async function agendarCita(req, res) {
         console.error('Error al agendar cita:', error);
 
         // Registrar error en la auditoría
-        if (connection) {
+        try {
+            const connection = await poolPromise;
             await connection.request()
                 .input('usuario_id', sql.Int, req.body.id_usuario)
                 .input('accion', sql.VarChar, 'Agendar Cita')
@@ -57,17 +40,59 @@ async function agendarCita(req, res) {
                 .input('resultado', sql.VarChar, 'Error')
                 .query(`INSERT INTO auditoria (usuario_id, accion, descripcion, resultado) 
                         VALUES (@usuario_id, @accion, @descripcion, @resultado)`);
+        } catch (auditError) {
+            console.error('Error al registrar en auditoría:', auditError);
         }
 
         res.status(500).send('Error al agendar la cita');
-    } finally {
-        if (connection) {
-            // Cerrar la conexión para evitar fugas de conexión
-            connection.close();
+    }
+}
+
+async function comprobarDisponibilidad(req, res) {
+    try {
+        const { fecha, hora } = req.body;
+
+        const connection = await poolPromise;
+
+        const result = await connection.request()
+            .input('fecha', sql.Date, fecha)
+            .input('hora', sql.Time, hora)
+            .query(`SELECT COUNT(*) AS count FROM citas_veterinarias WHERE fecha = @fecha AND hora = @hora`);
+
+        const isAvailable = result.recordset[0].count === 0;
+
+        // Registrar en la auditoría
+        await connection.request()
+            .input('usuario_id', sql.Int, req.session.userId) // Asegúrate de que el ID del usuario esté en la sesión
+            .input('accion', sql.VarChar, 'Comprobar Disponibilidad')
+            .input('descripcion', sql.Text, `Disponibilidad consultada para ${fecha} a las ${hora}`)
+            .input('resultado', sql.VarChar, isAvailable ? 'Disponible' : 'No disponible')
+            .query(`INSERT INTO auditoria (usuario_id, accion, descripcion, resultado) 
+                    VALUES (@usuario_id, @accion, @descripcion, @resultado)`);
+
+        res.status(200).json({ available: isAvailable });
+    } catch (error) {
+        console.error('Error al comprobar disponibilidad:', error);
+
+        // Registrar error en la auditoría
+        try {
+            const connection = await poolPromise;
+            await connection.request()
+                .input('usuario_id', sql.Int, req.session.userId)
+                .input('accion', sql.VarChar, 'Comprobar Disponibilidad')
+                .input('descripcion', sql.Text, `Error al comprobar disponibilidad: ${error.message}`)
+                .input('resultado', sql.VarChar, 'Error')
+                .query(`INSERT INTO auditoria (usuario_id, accion, descripcion, resultado) 
+                        VALUES (@usuario_id, @accion, @descripcion, @resultado)`);
+        } catch (auditError) {
+            console.error('Error al registrar en auditoría:', auditError);
         }
+
+        res.status(500).send('Error al comprobar la disponibilidad');
     }
 }
 
 module.exports = {
     agendarCita,
+    comprobarDisponibilidad,
 };
