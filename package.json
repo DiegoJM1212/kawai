@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@google-cloud/recaptcha-enterprise": "^5.11.0",
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "@sendgrid/mail": "^8.1.4",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
